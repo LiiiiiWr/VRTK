@@ -25,7 +25,21 @@ namespace VRTK
         /// <returns>A transform of the object representing the play area in the scene.</returns>
         public override Transform GetPlayArea()
         {
-            return null;
+            cachedPlayArea = GetSDKManagerPlayArea();
+            if (cachedPlayArea == null)
+            {
+                Camera mainCamera = Camera.main;
+                if (mainCamera != null)
+                {
+                    if (mainCamera.transform.parent != null)
+                    {
+                        //the camera's grandparent should be the `[Fallbacl_CameraRig]` GameObject but if that doens't exist then just get the camera parent object as a fallback
+                        cachedPlayArea = (mainCamera.transform.parent.parent != null ? mainCamera.transform.parent.parent : mainCamera.transform.parent);
+                    }
+                }
+            }
+
+            return cachedPlayArea;
         }
 
         /// <summary>
@@ -43,7 +57,7 @@ namespace VRTK
         /// <returns>The thickness of the drawn border.</returns>
         public override float GetPlayAreaBorderThickness()
         {
-            return 0f;
+            return 0.1f;
         }
 
         /// <summary>
